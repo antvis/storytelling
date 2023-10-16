@@ -1,0 +1,53 @@
+.stories {
+  margin-top: 64px;
+  .name {
+    font-size: 48px;
+    font-style: italic;
+
+    max-width: 1500px;
+    margin-left: 12%;
+  }
+
+  .list {
+    .story {
+      margin: 16px 0;
+      background-color: hsl(252, 84%, 80%);
+
+      .container {
+        max-width: 1500px;
+        margin-left: 12%;
+        padding: 24px 0;
+
+        display: flex;
+
+        .screenshot {
+          display: flex;
+          img {
+            max-width: 640px;
+            transition: transform 0.3s ease-in-out;
+          }
+        }
+
+        .title {
+          font-size: 32px;
+          font-weight: 330;
+          margin-top: 16px;
+          margin-left: 36px;
+          text-decoration: solid underline purple 3px;
+          transition: text-decoration 0.3s ease-in-out;
+
+          cursor: pointer;
+        }
+      }
+
+      &:hover {
+        img {
+          transform: scale(1.02);
+        }
+        .title {
+          text-decoration: solid underline purple 4px;
+        }
+      }
+    }
+  }
+}
