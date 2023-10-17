@@ -20,7 +20,7 @@ export const Stories: React.FC = () => {
                   </div>
                   <div className={styles.content}>
                     <div className={styles.title}>
-                      <Link to={`/story/${story.id}`}>
+                      <Link to={`${story.id}`}>
                         {story.title}
                       </Link>
                     </div>
