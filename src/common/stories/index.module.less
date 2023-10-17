@@ -1,31 +1,43 @@
 .stories {
   margin-top: 64px;
-  .name {
-    font-size: 48px;
-    font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    max-width: 1500px;
-    margin-left: 12%;
+  .name {
+    font-size: 40px;
+    font-style: italic;
   }
 
   .list {
+    width: 100%;
     .story {
       margin: 16px 0;
-      background-color: hsl(252, 84%, 80%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       .container {
-        max-width: 1500px;
-        margin-left: 12%;
+        max-width: 1400px;
+        width: 90%;
         padding: 24px 0;
 
         display: flex;
+        position: relative;
+        flex-wrap: wrap;
 
         .screenshot {
           display: flex;
+          width: 40%;
+          
           img {
-            max-width: 640px;
+            width: 100%;
             transition: transform 0.3s ease-in-out;
           }
+        }
+
+        .content {
+          width: 60%;
         }
 
         .title {
@@ -47,6 +59,24 @@
         .title {
           text-decoration: solid underline purple 4px;
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+      justify-content: center;
+
+    .screenshot {
+      width: 90%!important;
+    }
+    .content {
+      width: 90%!important;
+      .title {
+        margin-left: 0!important;
       }
     }
   }

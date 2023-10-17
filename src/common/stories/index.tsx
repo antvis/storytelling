@@ -1,4 +1,6 @@
 import React from 'react';
+import { StoryMetas } from '../../stories';
+import { Link } from 'react-router-dom';
 import styles from './index.module.less';
 
 export const Stories: React.FC = () => {
@@ -8,18 +10,26 @@ export const Stories: React.FC = () => {
         我们的数据故事
       </div>
       <div className={styles.list}>
-        <div className={styles.story}>
-          <div className={styles.container}>
-            <div className={styles.screenshot}>
-              <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*rHMLQZ6xI6wAAAAAAAAAAAAADmJ7AQ/original" />
-            </div>
-            <div className={styles.content}>
-              <div className={styles.title}>
-                “数”说杭州亚运会，带你盘点亚运会中的“数据冷知识”
+        {
+          StoryMetas.map((story) => {
+            return (
+              <div key={story.id} className={styles.story} style={{ backgroundColor: '#b2a1f7' }}>
+                <div className={styles.container}>
+                  <div className={styles.screenshot}>
+                    <img src={story.screenshot} />
+                  </div>
+                  <div className={styles.content}>
+                    <div className={styles.title}>
+                      <Link to={`/story/${story.id}`}>
+                        {story.title}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            )
+          })
+        }
       </div>
     </div>
   );
