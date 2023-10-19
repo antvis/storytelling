@@ -177,7 +177,7 @@ export const Contributors: React.FC = () => {
         title="Edit Access Token"
         style={{ top: 36 }}
         open={modalOpen}
-        onOk={(e) => {
+        onOk={() => {
           setAccessKey(editAccessKey);
           setModalOpen(false);
         }}
