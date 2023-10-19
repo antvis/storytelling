@@ -12,8 +12,9 @@ export const getContributors = async (accessKey: string | undefined, owner: stri
   });
 
   let page = 1;
-  let result = [];
+  const result = [];
 
+  // eslint-disable-next-line
   while(true) {
     const r = await octokit.request('GET /repos/{owner}/{repo}/contributors', {
       owner,
@@ -93,7 +94,7 @@ export const getContributorRelation = (repos: string[], contributors: any[][]) =
     });
   });
 
-  for(let [login, { contributions, single }] of contributionsMap.entries()) {
+  for(const [login, { contributions, single }] of contributionsMap.entries()) {
     nodes.push({
       id: login,
       

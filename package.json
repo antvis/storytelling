@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
-    "fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
+    "lint": "eslint src --ext ts,tsx",
+    "fix": "eslint src --ext ts,tsx --fix",
     "preview": "vite preview"
   },
   "dependencies": {
