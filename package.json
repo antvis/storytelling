@@ -13,6 +13,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@octokit/core": "^5.0.0",
+    "ahooks": "^3.7.8",
     "antd": "^5.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
