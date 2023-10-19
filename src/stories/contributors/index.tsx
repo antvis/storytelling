@@ -168,7 +168,7 @@ export const Contributors: React.FC = () => {
       </div>
       <div className={styles.graph} id="g6-container">
         <div className={styles.power}>
-          数据来源: GitHub API, visualized by <a href="http://github.com/antvis/G6" target="_blank">G6</a>.
+          Data from GitHub API, visualized by <a href="http://github.com/antvis/G6" target="_blank">G6</a>.
         </div>
         { loading && <div className={styles.loading}><Spin size="large" /></div> }
       </div>
