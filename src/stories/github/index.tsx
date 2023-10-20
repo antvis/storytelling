@@ -185,7 +185,9 @@ export const Github: React.FC = () => {
                   onClick={() => setInputVisible(true)}
                   icon={<PlusOutlined />}
                 >
-                  Add a GitHub Repo into Graph
+                  {
+                    isUser(mode) ? 'Add a GitHub User into Graph' : 'Add a GitHub Repo into Graph'
+                  }
                 </Tag>
               )}
             </Space>

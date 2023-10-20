@@ -73,6 +73,7 @@ export const getUserStarredRelation = async (accessKey: string | undefined, user
       // 去重
       if (starredRepoMap.has(full_name)) {
         nodes[starredRepoMap.get(full_name)].data.cluster = 'multi-user';
+        return;
       }
       nodes.push({
         id: full_name,
