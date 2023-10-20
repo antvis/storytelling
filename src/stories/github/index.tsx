@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Space, Button, Tag, Modal, Input, InputRef, Spin } from 'antd';
+import { Space, Button, Tag, Modal, Input, InputRef, Spin, Radio } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { useLocalStorageState } from 'ahooks';
-import { getContributorRelation, getReposContributors } from './data';
+import { useLocalStorageState, useDebounceFn } from 'ahooks';
+import { getContributorRelation, getUserStarredRelation } from './data';
 
 import styles from './index.module.less';
 
@@ -11,24 +11,44 @@ const { Graph } = G6;
 
 const AccessKeyLocalStorageKey = '__contributor_graph_access_key__';
 const ReposLocalStorageKey = '__contributor_graph_repos__';
+const UsersLocalStorageKey = '__starred_graph_users__';
 
-export const Contributors: React.FC = () => {
+function isUser(mode: string) {
+  return mode === 'user-starred';
+}
+
+export const Github: React.FC = () => {
+  const [mode, setMode] = useState('repository-contributions');
+
   const [accessKey, setAccessKey] = useLocalStorageState<string>(AccessKeyLocalStorageKey);
   const [defaultRepos, setDefaultRepos] = useLocalStorageState<string>(ReposLocalStorageKey);
+  const [defaultUsers, setDefaultUsers] = useLocalStorageState<string>(UsersLocalStorageKey);
+
+  const [inputs, setInputs] = useState<string[]>(JSON.parse((isUser(mode) ? defaultUsers : defaultRepos) || '[]'));
+
   const [editAccessKey, setEditAccessKey] = useState(accessKey);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [repos, setRepos] = useState<string[]>(JSON.parse(defaultRepos || '[]'));
-  const [contributorRelation, setContributorRelation] = useState<any>({ nodes: [], edges: [] });
+  
+  const [graphData, setGraphData] = useState<any>({ nodes: [], edges: [] });
+
+  const { run: queryData } = useDebounceFn(
+    () => {
+      setLoading(true);
+      const queryFunction = isUser(mode) ? getUserStarredRelation : getContributorRelation;
+      // const v = isUser(mode) ? users : repos;
+      queryFunction(accessKey, inputs).then((data) => {
+        setGraphData(data);
+        setLoading(false);
+      });
+    },
+    { wait: 500 },
+  );
 
   // Data
   useEffect(() => {
-    setLoading(true);
-    getReposContributors(accessKey, repos).then((data) => {
-      setContributorRelation(getContributorRelation(repos, data));
-      setLoading(false);
-    });
-  }, [repos]);
+    queryData();
+  }, [inputs]);
 
   // Repo input
   const [inputVisible, setInputVisible] = useState(false);
@@ -41,14 +61,11 @@ export const Contributors: React.FC = () => {
     }
   }, [inputVisible]);
 
-  const handleClose = (removedRepo: string) => () => {
-    const newRepos = repos.filter((repo) => repo !== removedRepo);
-    setRepos(newRepos);
-    setDefaultRepos(JSON.stringify(newRepos));
-  };
-
-  const showInput = () => {
-    setInputVisible(true);
+  const handleClose = (removed: string) => () => {
+    const value = inputs.filter((item) => item !== removed);
+    
+    setInputs(value);
+    isUser(mode) ? setDefaultUsers(JSON.stringify(value)) : setDefaultRepos(JSON.stringify(value));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,13 +73,19 @@ export const Contributors: React.FC = () => {
   };
 
   const handleInputConfirm = () => {
-    if (inputValue && !repos.includes(inputValue)) {
-      const newRepos = [...repos, inputValue];
-      setRepos(newRepos);
-      setDefaultRepos(JSON.stringify(newRepos));
+    if (inputValue && !inputs.includes(inputValue)) {
+      const value = [...inputs, inputValue];
+
+      setInputs(value);
+      isUser(mode) ? setDefaultUsers(JSON.stringify(value)) : setDefaultRepos(JSON.stringify(value));
     }
     setInputVisible(false);
     setInputValue('');
+  };
+
+  const onModeChange = (e: any) => {
+    setMode(e.target.value);
+    setInputs(isUser(e.target.value) ? JSON.parse(defaultUsers || '[]') : JSON.parse(defaultRepos || '[]'));
   };
 
   // G6 Graph
@@ -101,7 +124,7 @@ export const Contributors: React.FC = () => {
         labelShape: {
           position: {
             fields: ['nodeType'],
-            formatter: (model: any) => model.data.nodeType === 'repo' ? 'center' : 'bottom',
+            formatter: (model: any) => model.data.nodeType === 'main-node' ? 'center' : 'bottom',
           },
           text: {
             fields: ['label'],
@@ -109,6 +132,11 @@ export const Contributors: React.FC = () => {
           },
         },
         lodStrategy: {},
+      },
+      edge: {
+        keyShape: {
+          strokeOpacity: 0.2,
+        }
       },
       layout: {
         type: 'force',
@@ -120,20 +148,23 @@ export const Contributors: React.FC = () => {
       modes: {
         default: ['zoom-canvas', 'drag-canvas', 'drag-node', 'click-select'],
       },
-      data: contributorRelation,
+      data: graphData,
     });
-  }, [contributorRelation]);
+  }, [graphData]);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.left}>
-          <div className={styles.title}>GitHub Contributor Graph</div>
+          <Radio.Group value={mode} onChange={onModeChange} buttonStyle="solid" style={{ marginRight: 32 }}>
+            <Radio.Button value="user-starred">User starred Graph</Radio.Button>
+            <Radio.Button value="repository-contributions">Repository contributions Graph</Radio.Button>
+          </Radio.Group>
           <div className={styles.repo}>
             <Space size={[0, 'small']} wrap>
               {
-                repos.map((repo) => (
-                  <Tag key={repo} bordered={false} closable onClose={handleClose(repo)}>{repo}</Tag>
+                inputs.map((input) => (
+                  <Tag key={input} bordered={false} closable onClose={handleClose(input)}>{input}</Tag>
                 ))
               }
               {
@@ -151,7 +182,7 @@ export const Contributors: React.FC = () => {
               ) : (
                 <Tag
                   style={{ borderStyle: 'dashed' }}
-                  onClick={showInput}
+                  onClick={() => setInputVisible(true)}
                   icon={<PlusOutlined />}
                 >
                   Add a GitHub Repo into Graph
