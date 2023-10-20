@@ -86,12 +86,15 @@ export const HeatmapAsianGames2023: React.FC = () => {
           heatmapLayer.setData(frames[i % frames.length]);
           scene.render()
           i++;
-        }, 16)
+        }, 16);
       });
     }
     return () => {
       if (interval.current) {
         clearInterval(interval.current);
+      }
+      if (map.current) {
+        map.current.destroy();
       }
     }
   }, []);
