@@ -251,7 +251,7 @@ export const IsraeliPalestinianConflict: React.FC = () => {
           ],
         }}
       />
-      <div>
+      <div style={{ fontSize: 14 }}>
         <span>
           <a href="https://observablehq.com/@antv/g2-timeline" target="__blank">
             Code

@@ -6,7 +6,7 @@ import { Octokit } from '@octokit/core';
  * @param owner 
  * @param repo 
  */
-export const getContributors = async (accessKey: string | undefined, owner: string, repo: string) => {
+const getContributors = async (accessKey: string | undefined, owner: string, repo: string) => {
   const octokit = new Octokit({
     auth: accessKey
   });
@@ -35,7 +35,7 @@ export const getContributors = async (accessKey: string | undefined, owner: stri
   }
 }
 
-export const getReposContributors = async (accessKey: string | undefined, repos: string[]) => {
+const getReposContributors = async (accessKey: string | undefined, repos: string[]) => {
   const ps = repos.map(repo => {
     const [owner, repoName] = repo.split('/');
     return getContributors(accessKey, owner, repoName);
@@ -47,7 +47,9 @@ export const getReposContributors = async (accessKey: string | undefined, repos:
 /**
  * 将数据转化成关系图数据
  */
-export const getContributorRelation = (repos: string[], contributors: any[][]) => {
+export const getContributorRelation = async (accessKey: string | undefined, repos: string[]) => {
+  const contributors = await getReposContributors(accessKey, repos);
+
   // repo, contributor
   const nodes: any = [];
   const edges: any = [];
@@ -59,7 +61,7 @@ export const getContributorRelation = (repos: string[], contributors: any[][]) =
       id: repo,
 
       data: {
-        nodeType: 'repo',
+        nodeType: 'main-node',
         size: 32,
         cluster: repo,
         // cluster: 'repo',
@@ -75,9 +77,6 @@ export const getContributorRelation = (repos: string[], contributors: any[][]) =
       source: repo,
       target: login,
       data: {
-        keyShape: {
-          strokeOpacity: 0.5,
-        }
       },
     })));
   });
@@ -99,6 +98,7 @@ export const getContributorRelation = (repos: string[], contributors: any[][]) =
       id: login,
       
       data: {
+        nodeType: 'sub-node',
         size: (Math.log2(contributions) + 4) * 2,
         cluster: single ? 'single-user' : 'multi-user',
         contributions,
