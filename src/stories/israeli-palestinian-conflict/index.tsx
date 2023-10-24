@@ -1,5 +1,5 @@
 import React from "react";
-import { Chart } from "@berryv/g2-rect";
+import { Chart } from "@berryv/g2-react";
 
 const data = [
   {
