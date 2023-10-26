@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { kebabCaseToUpperCamelCase } from '../../helper';
 import * as StoryComponents from '../../stories';
-import { Header } from '../../common';
-import styles from './index.module.less';
 
 const { StoryMetas, ...Componets } = StoryComponents;
 
@@ -22,9 +20,8 @@ export const Story: React.FC = () => {
   }, []);
 
   return (
-    <div className={styles.page}>
-      <Header />
+    <>
       <Component />
-    </div>
+    </>
   );
 }
