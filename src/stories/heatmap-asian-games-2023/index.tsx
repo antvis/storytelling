@@ -16,10 +16,10 @@ export const HeatmapAsianGames2023: React.FC = () => {
       const scene = new Scene({
         id: 'l7-container',
         map: new GaodeMap({
-          style: 'dark',
+          style: 'light',
           center: [120.14165, 30.2743],
           zoom: 10,
-          minZoom: 8
+          minZoom: 8,
         })
       });
 
