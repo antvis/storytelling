@@ -6,7 +6,7 @@ export const Information: React.FC = () => {
     <div className={styles.information}>
       <div className={styles.container}>
         <div className={styles.title}>
-          图表有一思
+          图有一思
         </div>
         <div className={styles.description}>
           <div className={styles.params}>
